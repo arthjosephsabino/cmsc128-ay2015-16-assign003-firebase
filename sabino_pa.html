@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+  <head>
+    <title> HOME </title>
+    <meta charset="utf-8"/>
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src="bootstrap/js/jquery-2.1.4.min.js"> </script>
+    <script src="bootstrap/js/bootstrap.min.js"> </script>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+    
+  </head>
+    <style>
+      html,body{
+        
+        height: 100%;
+        width: 100%;
+        
+      }
+      #top{
+        width: 100%;
+        height: 25%;
+        text-align: center; 
+        border: 2px black solid;
+      }
+      #leftDiv{
+        text-align: center;
+        float: left;
+        height: 75%;
+        width: 50%;
+        border: 2px black solid;
+      }
+      #rightDiv{
+        float: right;
+        height: 75%;
+        width: 50%;
+        border: 2px black solid;
+      }
+      #form{
+        margin-top: 5%;
+        text-align: center;
+        
+      }
+      .lead{
+        font-size: 30px;
+        margin-top: 5%;
+        text-align: center;
+      }
+      hr
+      {
+          border: 2px  solid rgb(128, 128, 128);
+      }
+      button{
+        color: black;
+      }
+
+    </style>
+  <body>
+    <div id="top" ><p class="lead">Event Guest Attendance</p></div>
+    <div id="leftDiv">
+      <p class="lead">List of Event Guests</p>
+      <hr>
+      <div id='messagesDiv'></div>
+    </div>
+    
+    <div id="rightDiv">
+      <p class="lead">Form</p>
+      <div id="form">
+
+      <strong>Name: </strong> <br> <br>
+      <input type='text' id='nameInput' placeholder='Name'><br> <br>
+      <strong>Organization: </strong> <br> <br>
+      <input type='text' id='organizationInput' placeholder='Organization'><br> <br>
+      <strong>Contact Number: </strong> <br> <br>
+      <input type='text' id='contactInput' placeholder='Contact Number'><br> <br> <br> <br>
+      <button id="send" onclick="send()"> SEND</button>
+      </div>
+    </div>
+    
+    <script>
+      var myDataRef = new Firebase('https://vlowwq4a6mj.firebaseio-demo.com/');
+      function send() {
+     
+          var name = $('#nameInput').val();
+          var organization = $('#organizationInput').val();
+          var contact = $('#contactInput').val();
+
+          myDataRef.push({
+            name: name, 
+            organization: organization, 
+            contact: contact
+          });
+
+          $('#nameInput').val('');
+          $('#organizationInput').val('');
+          $('#contactInput').val(''); 
+        
+      }
+      myDataRef.on('child_added', function(snapshot) {
+            var attendance = snapshot.val();
+            display(attendance.name, attendance.organization, attendance.contact);
+        });
+        // Display attendance information
+        function display(name, org, contact) {
+
+            var contactBold = "Contact: ";
+            var orgBold = "Organization: ";
+            var nameBold = "Name: ";
+            var line = document.createElement("hr");
+            contactBold.bold();
+            orgBold.bold();
+            nameBold.bold();
+            $('#messagesDiv').prepend(line);
+            $('<div />').prepend($('<div />').text(contactBold + contact)).prepend($('<div />').text(orgBold + org)).prepend($('<div />').text(nameBold +name)).appendTo($('#messagesDiv'));
+            $('#messagesDiv').append(line);
+            $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
+        };
+    </script>
+  </body>
+</html>
